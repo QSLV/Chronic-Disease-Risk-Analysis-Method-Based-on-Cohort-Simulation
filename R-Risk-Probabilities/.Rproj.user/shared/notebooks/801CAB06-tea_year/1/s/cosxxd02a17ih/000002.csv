@@ -1,0 +1,2 @@
+"0","test <- read.csv(""test.csv"")"
+"0","c0_30 <- coxph(Surv(Tstart, Tstop, status) ~ strata(trans), data = test,method = ""breslow"")"

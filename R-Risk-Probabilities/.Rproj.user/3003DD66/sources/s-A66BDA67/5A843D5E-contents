@@ -1,0 +1,67 @@
+library(survival)
+library(mstate)
+library("colorspace")
+
+# 构建状态转移矩阵
+tmat <- transMat(x = list(c(2, 3, 4, 8), c(5,6,8), c(5,7,8), c(6,7,8),c(8),c(8),c(8),c()),
+                 names = c("health", "IA", "IS", "DM", "IA+IS","IA+DM","IS+DM","death"))
+tmat
+
+# 读取数据
+cmdata <- read.csv("save_m_df.csv")
+# 取符合属性组合的子集
+cmdata_30 <- subset(cmdata,age_5g=="1" & tea_year=="1" & testForBug == "0")
+# 
+mscm_30 <- msprep(time = c(NA, "IA_date", "IS_date","DM_date", "IA_IS_date","IA_DM_date","IS_DM_date","death_date"),
+                  status = c(NA, "IA", "IS", "DM","IA_IS","IA_DM","IS_DM","is_death"),
+                  data = cmdata_30 , trans = tmat,id=cmdata_30$THJID)
+
+
+mscm_30[, c("Tstart", "Tstop", "time")] <- mscm_30[, c("Tstart","Tstop", "time")]/365.25
+
+mscm_30
+
+write.table(mscm_30,"mscm_30.csv",row.names=FALSE,col.names=TRUE,sep=",")
+
+# 累计转移风险 通过coxph进行分层分析
+c0_30 <- coxph(Surv(Tstart, Tstop, status) ~ strata(trans), data = mscm_30,method = "breslow")
+# 同过msfit计算转移风险和协方差
+msf0_30 <- msfit(object = c0_30, vartype = "aalen", trans = tmat)
+
+
+# 预测每个状态之间累计转移概率
+pt1_30 <- probtrans(msf0_30, predt = 0)[[1]]
+pt2_30 <- probtrans(msf0_30, predt = 0)[[2]]
+pt3_30 <- probtrans(msf0_30, predt = 0)[[3]]
+pt4_30 <- probtrans(msf0_30, predt = 0)[[4]]
+pt5_30 <- probtrans(msf0_30, predt = 0)[[5]]
+pt6_30 <- probtrans(msf0_30, predt = 0)[[6]]
+pt7_30 <- probtrans(msf0_30, predt = 0)[[7]]
+pt8_30 <- probtrans(msf0_30, predt = 0)[[8]]
+
+pt1_mean <- apply(pt1_30[,2:9], 2, mean, na.rm = T)
+pt2_mean <- apply(pt2_30[,2:9], 2, mean, na.rm = T)
+pt3_mean <- apply(pt3_30[,2:9], 2, mean, na.rm = T)
+pt4_mean <- apply(pt4_30[,2:9], 2, mean, na.rm = T)
+pt5_mean <- apply(pt5_30[,2:9], 2, mean, na.rm = T)
+pt6_mean <- apply(pt6_30[,2:9], 2, mean, na.rm = T)
+pt7_mean <- apply(pt7_30[,2:9], 2, mean, na.rm = T)
+pt8_mean <- apply(pt8_30[,2:9], 2, mean, na.rm = T)
+
+pt1_mean
+pt2_mean
+pt3_mean
+pt4_mean
+pt5_mean
+pt6_mean
+pt7_mean
+pt8_mean
+
+
+pt1_30_new <- pt1_30[c(151,330,545,761,1016), ]
+pt2_30_new <- pt2_30[c(151,330,545,761,1016), ]
+pt3_30_new <- pt3_30[c(151,330,545,761,1016), ]
+pt4_30_new <- pt4_30[c(151,330,545,761,1016), ]
+pt5_30_new <- pt5_30[c(151,330,545,761,1016), ]
+pt6_30_new <- pt6_30[c(151,330,545,761,1016), ]
+pt7_30_new <- pt7_30[c(151,330,545,761,1016), ]

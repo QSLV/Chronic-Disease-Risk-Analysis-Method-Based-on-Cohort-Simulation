@@ -1,0 +1,21 @@
+"0","rm(pt1_links, pt2_links, pt3_links, pt4_links, pt5_links, pt6_links, pt7_links)
+cmdata_30 <- subset(cmdata, tea_year==""2"" & age_5g == ""2"")
+
+mscm_30 <- msprep(time = c(NA, ""IA_date"", ""IS_date"",""DM_date"", ""IA_IS_date"",""IA_DM_date"",""IS_DM_date"",""death_date""),
+                  status = c(NA, ""IA"", ""IS"", ""DM"",""IA_IS"",""IA_DM"",""IS_DM"",""is_death""),
+                  data = cmdata_30 , trans = tmat,id=cmdata_30$THJID)
+mscm_30[, c(""Tstart"", ""Tstop"", ""time"")] <- mscm_30[, c(""Tstart"",""Tstop"", ""time"")]/365.25
+c0_30 <- coxph(Surv(Tstart, Tstop, status) ~ strata(trans), data = mscm_30,method = ""breslow"")
+"
+"2","Stop time must be > start time, NA created"
+"0","msf0_30 <- msfit(object = c0_30, vartype = ""aalen"", trans = tmat)"
+"2","Stop time must be > start time, NA created"
+"2","Stop time must be > start time, NA created"
+"2","min里所有的参数都不存在; 回覆Inf"
+"2","min里所有的参数都不存在; 回覆Inf"
+"2","max里所有的参数都不存在；回覆-Inf"
+"2","max里所有的参数都不存在；回覆-Inf"
+"2","max里所有的参数都不存在；回覆-Inf"
+"2","max里所有的参数都不存在；回覆-Inf"
+"2","max里所有的参数都不存在；回覆-Inf"
+"2","max里所有的参数都不存在；回覆-Inf"

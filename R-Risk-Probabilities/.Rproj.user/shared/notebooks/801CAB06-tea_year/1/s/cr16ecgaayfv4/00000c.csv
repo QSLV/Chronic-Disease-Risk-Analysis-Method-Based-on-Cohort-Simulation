@@ -1,0 +1,10 @@
+"0","cmdata_30 <- subset(cmdata, tea_year==""2"" & age_5g == ""1"")
+
+
+
+mscm_30 <- msprep(time = c(NA, ""IA_date"", ""IS_date"",""DM_date"", ""IA_IS_date"",""IA_DM_date"",""IS_DM_date"",""death_date""),
+                  status = c(NA, ""IA"", ""IS"", ""DM"",""IA_IS"",""IA_DM"",""IS_DM"",""is_death""),
+                  data = cmdata_30 , trans = tmat,id=cmdata_30$THJID)
+"
+"2","Error in time[, -startings] : 量度数目不对
+"

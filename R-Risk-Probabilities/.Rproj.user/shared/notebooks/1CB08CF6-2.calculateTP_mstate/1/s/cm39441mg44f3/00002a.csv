@@ -1,0 +1,4 @@
+"0","cmdata_age_4 <- read.csv(""test.csv"")"
+"2","无法打开文件'test.csv': No such file or directory"
+"2","Error in file(file, ""rt"") : 鏃犳硶鎵撳紑閾剧粨
+"

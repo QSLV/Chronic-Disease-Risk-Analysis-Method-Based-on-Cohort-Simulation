@@ -1,0 +1,221 @@
+---
+title: "calculate transition probabilities"
+author: "Sun ZJ"
+date: "2020/12/04"
+output: word_document
+---
+    
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(survival)
+library(mstate)
+library("colorspace")
+```
+
+
+```{r}
+#library(haven)
+cmdata <- read.csv("CM_data_1204.csv")
+```
+
+
+```{r}
+tmat <- transMat(x = list(c(2, 3, 4, 8), c(5,6,8), c(5,7,8), c(6,7,8),c(8),c(8),c(8),c()), 
+                 names = c("health", "t2d", "ihd", "is", "t2d+ihd","t2d+is","ihd+is","death"))
+tmat
+```
+
+
+# 30-39岁
+```{r}
+cmdata_30 <- subset(cmdata,age_5g=="1")
+mscm_30 <- msprep(time = c(NA, "t2d_date", "ihd_date","is_date", "t2d_ihd_date2","t2d_is_date2","ihd_is_date2","ep_13421_da_datedeveloped2"), 
+               status = c(NA, "t2d_ep", "ihd_ep", "is_ep","t2d_ihd_ep","t2d_is_ep","ihd_is_ep","death_ep"), 
+               data = cmdata , trans = tmat,id=cmdata$csid)
+
+mscm_30[, c("Tstart", "Tstop", "time")] <- mscm_30[, c("Tstart","Tstop", "time")]/365.25
+
+c0_30 <- coxph(Surv(Tstart, Tstop, status) ~ strata(trans), data = mscm_30,method = "breslow")
+msf0_30 <- msfit(object = c0_30, vartype = "aalen", trans = tmat)
+
+
+```
+
+
+# compute Aalen-Johansen transition probabilities by "probtrans"
+
+```{r}
+pt1_30 <- probtrans(msf0_30, predt = 0)[[1]]
+pt2_30 <- probtrans(msf0_30, predt = 0)[[2]]
+pt3_30 <- probtrans(msf0_30, predt = 0)[[3]]
+pt4_30 <- probtrans(msf0_30, predt = 0)[[4]]
+pt5_30 <- probtrans(msf0_30, predt = 0)[[5]]
+pt6_30 <- probtrans(msf0_30, predt = 0)[[6]]
+pt7_30 <- probtrans(msf0_30, predt = 0)[[7]]
+
+pt1_30_new <- pt1_30[c(151,330,545,761,1016), ]
+pt2_30_new <- pt2_30[c(151,330,545,761,1016), ]
+pt3_30_new <- pt3_30[c(151,330,545,761,1016), ]
+pt4_30_new <- pt4_30[c(151,330,545,761,1016), ]
+pt5_30_new <- pt5_30[c(151,330,545,761,1016), ]
+pt6_30_new <- pt6_30[c(151,330,545,761,1016), ]
+pt7_30_new <- pt7_30[c(151,330,545,761,1016), ]
+```
+
+
+# 40-49岁
+```{r}
+cmdata_40 <- subset(cmdata,age_5g=="2")
+mscm_40 <- msprep(time = c(NA, "t2d_date", "ihd_date","is_date", "t2d_ihd_date2","t2d_is_date2","ihd_is_date2","ep_13421_da_datedeveloped2"), 
+               status = c(NA, "t2d_ep", "ihd_ep", "is_ep","t2d_ihd_ep","t2d_is_ep","ihd_is_ep","death_ep"), 
+               data = cmdata_40 , trans = tmat,id=cmdata_40$csid)
+mscm_40[, c("Tstart", "Tstop", "time")] <- mscm_40[, c("Tstart","Tstop", "time")]/365.25
+
+c0_40 <- coxph(Surv(Tstart, Tstop, status) ~ strata(trans), data = mscm_40,method = "breslow")
+msf0_40 <- msfit(object = c0_40, vartype = "aalen", trans = tmat)
+
+
+```
+
+
+
+# compute Aalen-Johansen transition probabilities by "probtrans"
+
+```{r}
+pt1_40 <- probtrans(msf0_40, predt = 0)[[1]]
+pt2_40 <- probtrans(msf0_40, predt = 0)[[2]]
+pt3_40 <- probtrans(msf0_40, predt = 0)[[3]]
+pt4_40 <- probtrans(msf0_40, predt = 0)[[4]]
+pt5_40 <- probtrans(msf0_40, predt = 0)[[5]]
+pt6_40 <- probtrans(msf0_40, predt = 0)[[6]]
+pt7_40 <- probtrans(msf0_40, predt = 0)[[7]]
+
+pt1_40_new <- pt1_40[c(316,658,1009,1364,1729), ]
+pt2_40_new <- pt2_40[c(316,658,1009,1364,1729), ]
+pt3_40_new <- pt3_40[c(316,658,1009,1364,1729), ]
+pt4_40_new <- pt4_40[c(316,658,1009,1364,1729), ]
+pt5_40_new <- pt5_40[c(316,658,1009,1364,1729), ]
+pt6_40_new <- pt6_40[c(316,658,1009,1364,1729), ]
+pt7_40_new <- pt7_40[c(316,658,1009,1364,1729), ]
+```
+
+
+# 50-59岁
+```{r}
+cmdata_50 <- subset(cmdata,age_5g=="3")
+mscm_50 <- msprep(time = c(NA, "t2d_date", "ihd_date","is_date", "t2d_ihd_date2","t2d_is_date2","ihd_is_date2","ep_13421_da_datedeveloped2"), 
+               status = c(NA, "t2d_ep", "ihd_ep", "is_ep","t2d_ihd_ep","t2d_is_ep","ihd_is_ep","death_ep"), 
+               data = cmdata_50 , trans = tmat,id=cmdata_50$csid)
+mscm_50[, c("Tstart", "Tstop", "time")] <- mscm_50[, c("Tstart","Tstop", "time")]/365.25
+
+c0_50 <- coxph(Surv(Tstart, Tstop, status) ~ strata(trans), data = mscm_50,method = "breslow")
+msf0_50 <- msfit(object = c0_50, vartype = "aalen", trans = tmat)
+
+
+```
+
+
+
+# compute Aalen-Johansen transition probabilities by "probtrans"
+
+```{r}
+pt1_50 <- probtrans(msf0_50, predt = 0)[[1]]
+pt2_50 <- probtrans(msf0_50, predt = 0)[[2]]
+pt3_50 <- probtrans(msf0_50, predt = 0)[[3]]
+pt4_50 <- probtrans(msf0_50, predt = 0)[[4]]
+pt5_50 <- probtrans(msf0_50, predt = 0)[[5]]
+pt6_50 <- probtrans(msf0_50, predt = 0)[[6]]
+pt7_50 <- probtrans(msf0_50, predt = 0)[[7]]
+
+pt1_50_new <- pt1_50[c(316,658,1009,1364,1729), ]
+pt2_50_new <- pt2_50[c(316,658,1009,1364,1729), ]
+pt3_50_new <- pt3_50[c(316,658,1009,1364,1729), ]
+pt4_50_new <- pt4_50[c(316,658,1009,1364,1729), ]
+pt5_50_new <- pt5_50[c(316,658,1009,1364,1729), ]
+pt6_50_new <- pt6_50[c(316,658,1009,1364,1729), ]
+pt7_50_new <- pt7_50[c(316,658,1009,1364,1729), ]
+```
+
+
+
+
+# 60-69岁
+```{r}
+cmdata_age_4 <- read.csv("test.csv")
+cmdata_60 <- subset(cmdata_age_4,age_5g=="4")
+mscm_60 <- msprep(time = c(NA, "t2d_date", "ihd_date","is_date", "t2d_ihd_date2","t2d_is_date2","ihd_is_date2","ep_13421_da_datedeveloped2"), 
+               status = c(NA, "t2d_ep", "ihd_ep", "is_ep","t2d_ihd_ep","t2d_is_ep","ihd_is_ep","death_ep"), 
+               data = cmdata_60 , trans = tmat,id=cmdata_60$csid)
+
+
+mscm_60[, c("Tstart", "Tstop", "time")] <- mscm_60[, c("Tstart","Tstop", "time")]/365.25
+
+c0_60 <- coxph(Surv(Tstart, Tstop, status) ~ strata(trans), data = mscm_60,method = "breslow")
+msf0_60 <- msfit(object = c0_60, vartype = "aalen", trans = tmat)
+
+
+```
+
+
+
+# compute Aalen-Johansen transition probabilities by "probtrans"
+
+```{r}
+pt1_60 <- probtrans(msf0_60, predt = 0)[[1]]
+pt2_60 <- probtrans(msf0_60, predt = 0)[[2]]
+pt3_60 <- probtrans(msf0_60, predt = 0)[[3]]
+pt4_60 <- probtrans(msf0_60, predt = 0)[[4]]
+pt5_60 <- probtrans(msf0_60, predt = 0)[[5]]
+pt6_60 <- probtrans(msf0_60, predt = 0)[[6]]
+pt7_60 <- probtrans(msf0_60, predt = 0)[[7]]
+
+pt1_60_new <- pt1_60[c(316,658,1009,1364,1729), ]
+pt2_60_new <- pt2_60[c(316,658,1009,1364,1729), ]
+pt3_60_new <- pt3_60[c(316,658,1009,1364,1729), ]
+pt4_60_new <- pt4_60[c(316,658,1009,1364,1729), ]
+pt5_60_new <- pt5_60[c(316,658,1009,1364,1729), ]
+pt6_60_new <- pt6_60[c(316,658,1009,1364,1729), ]
+pt7_60_new <- pt7_60[c(316,658,1009,1364,1729), ]
+```
+
+
+
+# 70-90岁
+```{r}
+cmdata_70 <- subset(cmdata,age_5g=="5")
+mscm_70 <- msprep(time = c(NA, "t2d_date", "ihd_date","is_date", "t2d_ihd_date2","t2d_is_date2","ihd_is_date2","ep_13421_da_datedeveloped2"), 
+               status = c(NA, "t2d_ep", "ihd_ep", "is_ep","t2d_ihd_ep","t2d_is_ep","ihd_is_ep","death_ep"), 
+               data = cmdata_70 , trans = tmat,id=cmdata_70$csid)
+mscm_70[, c("Tstart", "Tstop", "time")] <- mscm_70[, c("Tstart","Tstop", "time")]/365.25
+
+c0_70 <- coxph(Surv(Tstart, Tstop, status) ~ strata(trans), data = mscm_70,method = "breslow")
+msf0_70 <- msfit(object = c0_70, vartype = "aalen", trans = tmat)
+
+
+```
+
+
+
+# compute Aalen-Johansen transition probabilities by "probtrans"
+
+```{r}
+pt1_70 <- probtrans(msf0_70, predt = 0)[[1]]
+pt2_70 <- probtrans(msf0_70, predt = 0)[[2]]
+pt3_70 <- probtrans(msf0_70, predt = 0)[[3]]
+pt4_70 <- probtrans(msf0_70, predt = 0)[[4]]
+pt5_70 <- probtrans(msf0_70, predt = 0)[[5]]
+pt6_70 <- probtrans(msf0_70, predt = 0)[[6]]
+pt7_70 <- probtrans(msf0_70, predt = 0)[[7]]
+
+pt1_70_new <- pt1_70[c(316,658,1009,1364,1729), ]
+pt2_70_new <- pt2_70[c(316,658,1009,1364,1729), ]
+pt3_70_new <- pt3_70[c(316,658,1009,1364,1729), ]
+pt4_70_new <- pt4_70[c(316,658,1009,1364,1729), ]
+pt5_70_new <- pt5_70[c(316,658,1009,1364,1729), ]
+pt6_70_new <- pt6_70[c(316,658,1009,1364,1729), ]
+pt7_70_new <- pt7_70[c(316,658,1009,1364,1729), ]
+```
